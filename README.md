@@ -21,6 +21,14 @@ This project implements an audio transcription service using the [openai/whisper
 
 *   [Docker](https://docs.docker.com/get-docker/) installed on your system.
 
+## Screenshots
+
+![Screenshot: intarface](pictures/interface.png)
+
+![Screenshot: div Hashing](pictures/import_audio.png)
+
+![Screenshot: List of Hash Functions](pictures/transcribation.png)
+
 ## Installation
 
 1.  Make sure Docker and Docker Compose are installed on your server.
@@ -39,7 +47,7 @@ This project implements an audio transcription service using the [openai/whisper
 
 3. Ensure that Docker Desktop is running on your system. 
 
-4.  Run the project using `makefile`. Note that the initial Docker image creation may take up to an hour due to library downloads and tensor processing.
+4.  Run the project using `make -f makefile`. Note that the initial Docker image creation may take up to an hour due to library downloads and tensor processing.
 
     ```bash
     make -f makefile
