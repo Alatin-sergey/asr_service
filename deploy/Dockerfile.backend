@@ -1,0 +1,16 @@
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+COPY ./requirements/back_req.txt /app/back_req.txt
+COPY ./runners/backend.sh /app/backend.sh
+COPY ./.env /app/.env
+
+RUN pip install --no-cache-dir --upgrade -r /app/back_req.txt
+
+COPY ./src /app/src
+COPY ./src/backend.py /app/backend.py
+
+RUN chmod +x /app/backend.sh
+
+ENV TRANSFORMERS_CACHE="/app/.cache"

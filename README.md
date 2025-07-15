@@ -1,3 +1,100 @@
+# Сервис Транскрибации Аудио
+
+Этот проект реализует сервис транскрибации аудио, использующий модель [openai/whisper-large-v3-turbo](https://huggingface.co/openai/whisper-large-v3-turbo) от Hugging Face. Он предоставляет веб-интерфейс Streamlit и API FastAPI для транскрибации аудиофайлов.
+
+## Функциональность
+
+* **Транскрибация Аудио**: Транскрибирует аудиофайлы с использованием модели Whisper.
+* **Интерфейс Streamlit**: Предоставляет удобный веб-интерфейс для загрузки и транскрибации аудио.
+* **API FastAPI**: Предлагает API-endpoint для программного доступа к сервису транскрибации.
+* **Dockerized**: Упакован в Docker-контейнер для легкого развертывания и переносимости.
+
+## Используемые технологии
+
+* **openai/whisper-large-v3-turbo**: модель для преобразования речи в текст.
+* **Hugging Face Transformers**: библиотека для применения предварительно обученных моделей.
+* **Streamlit**: фреймворк для создания веб-приложений.
+* **FastAPI**: веб-фреймворк для передачи данных между сервисами.
+* **Docker**: Платформа для контейнеризации приложений.
+
+
+## Необходимые условия
+
+* [Docker](https://docs.docker.com/get-docker/), установленный в вашей системе.
+
+
+## Скриншоты
+
+![Screenshot: intarface](pictures/interface.png)
+
+![Screenshot: div Hashing](pictures/import_audio.png)
+
+![Screenshot: List of Hash Functions](pictures/transcribation.png)
+
+
+## Установка
+
+1. Убедитесь, что Docker и Docker Compose установлены на вашем сервере.
+2. Убедитесь, что команда make установлена в системных переменных среды. Если вы еще не установили make, выполните следующие действия:
+
+    * Для Windows: Следуйте инструкциям на этом сайте: https://www.thewindowsclub.com/install-and-run-makefile-on-windows. Обычно это включает в себя установку MinGW или аналогичного инструментария, а затем добавление каталога, содержащего make (обычно C:\MinGW\bin или аналогичный), в системную переменную среды PATH.
+    * Для macOS и Linux: make обычно предустановлен или легко устанавливается с помощью диспетчера пакетов вашей системы (например, apt install make на Debian/Ubuntu, brew install make на macOS).
+
+
+3. Клонируйте репозиторий:
+```bash
+git clone https://github.com/Alatin-sergey/asr_service.git
+cd asr_service
+```
+
+4. Убедитесь, что Docker Desktop запущен в вашей системе.
+
+5. Запустите проект, используя make -f makefile. Обратите внимание, что начальное создание Docker-образа может занять до часа из-за загрузки библиотек и обработки тензоров.
+
+```bash
+make -f makefile
+```
+
+6. Откройте Streamlit-приложение в вашем браузере по адресу http://localhost:8501. Этот порт используется для пользовательского интерфейса. Получите доступ к API FastAPI по адресу http://localhost:8001. Этот порт используется для бэкенд-API.
+
+7. Чтобы остановить makefile, используйте:
+```bash
+make -f makefile down
+```
+
+## Endpoint: /api/transcribe
+
+* Метод: POST
+
+* Описание: Транскрибирует аудиофайл.
+
+* Тело запроса:
+    file: Аудиофайл для транскрибации (например, .wav, .mp3).
+
+* Тело ответа:
+    json
+
+{
+  "transcription": "Транскрибированный текст."
+}
+
+* Пример запроса (с использованием curl):
+```bash
+
+curl -X POST -F "file=@audio.wav" http://localhost:8000/api/transcribe
+```
+
+## Лицензия
+
+См. файл LICENSE для получения подробной информации.
+
+## Благодарности
+
+* В этом проекте используется модель openai/whisper-large-v3-turbo, которая лицензируется в соответствии с ее соответствующей лицензией (см. [LICENSE](LICENSE)).
+* Спасибо команде Hugging Face за предоставление библиотеки Transformers.
+
+
+
 # Audio Transcription Service
 
 This project implements an audio transcription service using the [openai/whisper-large-v3-turbo](https://huggingface.co/openai/whisper-large-v3-turbo) model from Hugging Face. It provides both a Streamlit web interface and a FastAPI API for transcribing audio files.
@@ -41,8 +138,8 @@ This project implements an audio transcription service using the [openai/whisper
 2.  Clone the repository:
 
     ```bash
-    git clone https://github.com/Alatin-sergey/hash_project.git
-    cd hash_project
+    git clone https://github.com/Alatin-sergey/asr_service.git
+    cd asr_service
     ```
 
 3. Ensure that Docker Desktop is running on your system. 
@@ -61,15 +158,6 @@ This project implements an audio transcription service using the [openai/whisper
     ```bash
     make -f makefile down
     ```
-    
-
-7. To clean server from Docker Desktop:
-   
-    ```bash
-    make -f makefile clean
-    ```
-    
-    **Warning:** This command will remove all unused Docker images and volumes. Be careful when using it.
 
 ### Endpoint: `/api/transcribe`
 

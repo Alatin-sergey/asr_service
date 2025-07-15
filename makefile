@@ -1,40 +1,41 @@
-PROJECT_NAME = automatic_speech_recognition
-
-# Имя файла docker-compose
-COMPOSE_FILE = docker-compose.yml
-
-# Цель по умолчанию
 all: up
 
-# Запуск сервисов
+copy_env:
+	cat example.env .env
+
 up: 
 	docker-compose -f $(COMPOSE_FILE) up -d --build
 
-# Остановка сервисов
 down:
 	docker-compose -f $(COMPOSE_FILE) down
 
-# Перезапуск сервисов
-restart: down up
+build_torch_image:
+	docker build -t torch_image -f ./deploy/Dockerfile.torch .
 
-# Проверка статуса сервисов
-ps:
-	docker-compose -f $(COMPOSE_FILE) ps
+build_backend_image:
+	docker build -t backend_image -f ./deploy/Dockerfile.backend .
 
-# Удаление неиспользуемых образов и томов (очистка)
-clean: down
-	docker system prune -a --volumes --force
+build_frontend_image:
+	docker build -t frontend_image -f ./deploy/Dockerfile.frontend .
 
-# Все вместе
-full: up down clean
+build_llm_image:
+	docker build -t llm_image -f ./deploy/Dockerfile.llm .
 
-# Помощь
+full_start:
+	copy_env
+	build_torch_image
+	build_llm_image
+	build_backend_image
+	build_frontend_image
+	docker-compose up -d
+	
 help:
 	@echo "Доступные цели:"
-	@echo "  up      - Запуск сервисов"
-	@echo "  down    - Остановка сервисов"
-	@echo "  restart - Перезапуск сервисов"
-	@echo "  clean   - Удаление неиспользуемых образов и томов"
-	@echo "  full    - Запуск, остановка и очистка проекта"
+	@echo "  all            - (По умолчанию) Запускает сервисы."
+	@echo "  up             - Запускает сервисы (с пересборкой образов, если необходимо)."
+	@echo "  down           - Останавливает сервисы."
+	@echo "  copy_env       - Копирует example.env в .env"
+	@echo "  full_start     - Копирует env и запускает сервисы."
+	@echo "  build_*_image  - Собирает образ сервиса. Варианты *: torch, backend, frontend, llm"
 
-.PHONY: all up down restart clean full help
+.PHONY: all up down help

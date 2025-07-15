@@ -1,27 +1,53 @@
-version: "3.9"
 services:
-  fastapi:
+  backend:
     build:
       context: .
-      dockerfile: Dockerfile.fastapi
+      dockerfile: deploy/Dockerfile.backend
+    container_name: backend
+    env_file:
+      - .env
+    entrypoint: /bin/bash
     ports:
-      - "8000:8000"
-    networks:
-      - app-network
-
-  streamlit:
-    build:
-      context: .
-      dockerfile: Dockerfile.streamlit
-    ports:
-      - "8501:8501"
-    depends_on:
-      - fastapi
-    networks:
-      - app-network
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    command: ["/app/backend.sh"]
     environment:
-      - FASTAPI_URL=http://fastapi:8000
+      - PYTHONPATH=/app/src
+    volumes:
+    - ./src:/app/src
 
-networks:
-  app-network:
-    driver: bridge
+  frontend:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.frontend
+    container_name: frontend
+    env_file:
+      - .env
+    entrypoint: /bin/bash
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      - PYTHONPATH=/app/src
+    command: ["/app/frontend.sh"]
+    volumes:
+    - ./src:/app/src
+
+  llm:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.llm
+    container_name: llm_image
+    env_file:
+      - .env
+    entrypoint: /bin/bash
+    ports:
+      - "${LLM_PORT}:${LLM_PORT}"
+    command: ["/app/llm.sh"]
+    environment:
+      - PYTHONPATH=/app/src
+    volumes:
+    - ./src:/app/src
+
+volumes:
+  frontend:
+  backend:
+  llm:

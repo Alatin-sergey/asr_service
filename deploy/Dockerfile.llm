@@ -1,0 +1,16 @@
+FROM torch_image
+
+WORKDIR /app
+
+COPY ./requirements/llm_req.txt /app/llm_req.txt
+COPY ./runners/llm.sh /app/llm.sh
+COPY ./.env /app/.env
+
+RUN pip install --no-cache-dir --upgrade -r /app/llm_req.txt
+
+COPY ./src/llm_app.py /app/llm_app.py
+COPY ./utils /app/utils
+
+RUN chmod +x /app/llm.sh
+
+ENV TRANSFORMERS_CACHE="/app/.cache"
